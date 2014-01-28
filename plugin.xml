@@ -10,7 +10,6 @@
     <keywords>cordova,aviary,phonegap</keywords>
 
     <platform name="ios">
-        <source-file src="src/ios/PictaAviary.m" />
         <js-module src="www/PictaAviary.js" name="PictaAviary">
             <clobbers target="pictaPlugins.aviary" />
         </js-module>
@@ -22,5 +21,6 @@
         </config-file>
 
         <header-file src="src/ios/PictaAviary.h" />
+        <source-file src="src/ios/PictaAviary.m" />
     </platform>
 </plugin>
