@@ -1,5 +1,14 @@
-function PictaAviary {}
+/*
+*
+* TODO license
+*/
 
-PictaAviary.prototype.launchEditor = function (imageData, successCallback, errorCallback) {
-	cordova.exec(successCallback, errorCallback, 'PictaAviary', 'launchEditor', [imageData]);
-};
+var exec = require('cordova/exec');
+
+var pictaAviary = {
+	launchEditor: function (imageData, successCallback, errorCallback) {
+		exec(successCallback, errorCallback, 'PictaAviary', 'launchEditor', [imageData]);
+	}
+}
+
+module.exports = pictaAviary;
