@@ -5,10 +5,7 @@
 
 @implementation PictaAviary
 
-
-@synthesize aviaryController;
 @synthesize callbackId;
-
 
 - (void) launchEditor: (CDVInvokedUrlCommand*)command
 {
@@ -16,46 +13,48 @@
 
 	self.callbackId = command.callbackId;
 
-	NSString* imageDataRaw = [command.arguments objectAtIndex:0];
-	NSData* imageData = [NSData initWithBase64EncodedString:imageDataRaw];
+	NSString *imageDataBase64 = [command.arguments objectAtIndex:0];
+	NSData *imageData = [[NSData alloc] initWithBase64EncodedString:imageDataBase64 options:0];
 
-	UIImage* image = [UIImage imageWithData:imageData];
+	UIImage *image = [UIImage imageWithData:imageData];
 
-	self.aviaryController = [[AFPhotoEditorController alloc] initWithImage:image];
-	[self.aviaryController setDelegate:self];
+	AFPhotoEditorController *aviaryController = [[AFPhotoEditorController alloc] initWithImage:image];
+	[aviaryController setDelegate:self];
 
-	[self presentModalViewController:self.aviaryController animated:YES completion:nil];
+	[self.viewController presentViewController:aviaryController animated:YES completion:nil];
 }
 
 
 - (void) photoEditor: (AFPhotoEditorController*)editor finishedWithImage:(UIImage*)image
 {
-	NSData* imageData = UIImageJPEGRepresentation(image, 80.0f);
-
-	[self successCallback:imageData];
-	[self dismissModalViewControllerAnimated:YES];
+	[self successCallback:image];
+	[self.viewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 
 - (void) photoEditorCanceled:(AFPhotoEditorController*)editor
 {
 	[self cancelCallback];
-	[self dismissModalViewControllerAnimated:YES];
+	[self.viewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 
-- (void) successCallback:(NSData*)imageData
+- (void) successCallback:(UIImage*)image
 {
-	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
-		messageAsString:imageData];
+    NSString *base64Image = [UIImageJPEGRepresentation(image, 80.0f) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+
+    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
+		messageAsString:base64Image];
 
 	[self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
 }
 
 
-- (void) cancelCallback:(NSData*)
+- (void) cancelCallback
 {
-	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
+	CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
 
 	[self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
 }
+
+@end
