@@ -1,6 +1,7 @@
 #import "PictaAviary.h"
 #import <Cordova/CDV.h>
 #import "AFPhotoEditorController.h"
+#import "AFPhotoEditorCustomization.h"
 
 
 @implementation PictaAviary
@@ -20,6 +21,8 @@
 
 	AFPhotoEditorController *aviaryController = [[AFPhotoEditorController alloc] initWithImage:image];
 	[aviaryController setDelegate:self];
+    
+    [AFPhotoEditorCustomization setToolOrder:@[kAFEnhance, kAFOrientation, kAFCrop, kAFAdjustments, kAFSharpness, kAFFocus, kAFText]];
 
 	[self.viewController presentViewController:aviaryController animated:YES completion:nil];
 }
