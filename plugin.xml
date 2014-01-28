@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    id="me.picta.phonegapaviary" version="0.0.1">
+    
+    <name>PhoneGapAviary</name>
+    <description>PhoneGap plugin for integrating Aviary SDK</description>
+    <license>MIT</license>
+    <author>Grigory Kruglov</author>
+
+    <keywords>cordova,aviary,phonegap</keywords>
+
+    <engines>
+        <engine name="cordova" version=">=3.3.0" />
+    </engines>
+
+    <js-module src="www/PictaAviary.js" name="PictaAviary">
+        <clobbers target="picta.aviary" />
+    </js-module>
+
+    <platform name="ios">
+        <source-file src="src/ios/PictaAviary.m" />
+
+        <config-file target="config.xml" parent="/*">
+            <feature name="PictaAviary">
+                <param name="ios-package" value="PictaAviary" />
+            </feature>
+        </config-file>
+
+        <header-file src="src/ios/PictaAviary.h" />
+    </platform>
+</plugin>
