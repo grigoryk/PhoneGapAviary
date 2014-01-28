@@ -2,12 +2,10 @@
 #import "AFPhotoEditorController.h"
 
 @interface PictaAviary : CDVPlugin <AFPhotoEditorControllerDelegate> {
-	AFPhotoEditorController* aviaryController;
-	NSString* callbackId;
+	NSString *callbackId;
 }
 
-@property (nonatomic, retain) AFPhotoEditorController *aviaryController;
-@property (nonatomic, retain) NSString* callbackId;
+@property (nonatomic, retain) NSString *callbackId;
 
 - (void) launchEditor: (CDVInvokedUrlCommand*)command;
 
