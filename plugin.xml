@@ -10,7 +10,7 @@
     <keywords>cordova,aviary,phonegap</keywords>
 
     <engines>
-        <engine name="cordova" version=">=3.3.0" />
+        <engine name="cordova" version=">=3.1.0" />
     </engines>
 
     <js-module src="www/PictaAviary.js" name="PictaAviary">
