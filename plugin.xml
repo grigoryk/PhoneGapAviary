@@ -9,13 +9,11 @@
 
     <keywords>cordova,aviary,phonegap</keywords>
 
-
-    <js-module src="www/PictaAviary.js" name="PictaAviary">
-        <clobbers target="picta.aviary" />
-    </js-module>
-
     <platform name="ios">
         <source-file src="src/ios/PictaAviary.m" />
+        <js-module src="www/PictaAviary.js" name="PictaAviary">
+            <clobbers target="pictaPlugins.aviary" />
+        </js-module>
 
         <config-file target="config.xml" parent="/*">
             <feature name="PictaAviary">
