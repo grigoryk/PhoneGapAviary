@@ -2,6 +2,7 @@
 #import <Cordova/CDV.h>
 #import "AFPhotoEditorController.h"
 #import "AFPhotoEditorCustomization.h"
+#import "AssetsLibrary/AssetsLibrary.h"
 
 
 @implementation PictaAviary
@@ -11,19 +12,19 @@
 - (void) launchEditor: (CDVInvokedUrlCommand*)command
 {
 	[AFOpenGLManager beginOpenGLLoad];
-
+    
 	self.callbackId = command.callbackId;
-
-	NSString *imageDataBase64 = [command.arguments objectAtIndex:0];
-	NSData *imageData = [[NSData alloc] initWithBase64EncodedString:imageDataBase64 options:0];
-
+    
+	NSString *imageUri = [command.arguments objectAtIndex:0];
+	NSData *imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:imageUri]];
+    
 	UIImage *image = [UIImage imageWithData:imageData];
-
+    
 	AFPhotoEditorController *aviaryController = [[AFPhotoEditorController alloc] initWithImage:image];
 	[aviaryController setDelegate:self];
     
     [AFPhotoEditorCustomization setToolOrder:@[kAFEnhance, kAFOrientation, kAFCrop, kAFAdjustments, kAFSharpness, kAFFocus, kAFText]];
-
+    
 	[self.viewController presentViewController:aviaryController animated:YES completion:nil];
 }
 
@@ -44,19 +45,24 @@
 
 - (void) successCallback:(UIImage*)image
 {
-    NSString *base64Image = [UIImageJPEGRepresentation(image, 80.0f) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
-
-    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
-		messageAsString:base64Image];
-
-	[self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
+    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+    
+    [library writeImageToSavedPhotosAlbum:[image CGImage] orientation:(ALAssetOrientation)[image imageOrientation] completionBlock:^(NSURL *assetURL, NSError *error) {
+        if (error) {
+            [self cancelCallback];
+        } else {
+            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
+                                                              messageAsString:[assetURL absoluteString]];
+            
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
+        }
+    }];
 }
-
 
 - (void) cancelCallback
 {
 	CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
-
+    
 	[self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
 }
 
