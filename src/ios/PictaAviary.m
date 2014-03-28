@@ -11,35 +11,37 @@
 
 - (void) launchEditor: (CDVInvokedUrlCommand*)command
 {
-	[AFOpenGLManager beginOpenGLLoad];
+    [AFOpenGLManager beginOpenGLLoad];
     
-	self.callbackId = command.callbackId;
+    self.callbackId = command.callbackId;
     
-	NSString *imageUri = [command.arguments objectAtIndex:0];
-	NSData *imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:imageUri]];
+    NSString *imageUri = [command.arguments objectAtIndex:0];
+    NSData *imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:imageUri]];
     
-	UIImage *image = [UIImage imageWithData:imageData];
+    UIImage *image = [UIImage imageWithData:imageData];
     
-	AFPhotoEditorController *aviaryController = [[AFPhotoEditorController alloc] initWithImage:image];
-	[aviaryController setDelegate:self];
+    AFPhotoEditorController *aviaryController = [[AFPhotoEditorController alloc] initWithImage:image];
+    [aviaryController setDelegate:self];
+
+    [AFPhotoEditorCustomization setCropToolPresets:@[@{kAFCropPresetName:@"Banner", kAFCropPresetWidth:@16, kAFCropPresetHeight:@5}, @{kAFCropPresetName:@"Logo", kAFCropPresetWidth:@1, kAFCropPresetHeight:@1}]];
     
     [AFPhotoEditorCustomization setToolOrder:@[kAFEnhance, kAFOrientation, kAFCrop, kAFAdjustments, kAFSharpness, kAFFocus, kAFText]];
     
-	[self.viewController presentViewController:aviaryController animated:YES completion:nil];
+    [self.viewController presentViewController:aviaryController animated:YES completion:nil];
 }
 
 
 - (void) photoEditor: (AFPhotoEditorController*)editor finishedWithImage:(UIImage*)image
 {
-	[self successCallback:image];
-	[self.viewController dismissViewControllerAnimated:YES completion:nil];
+    [self successCallback:image];
+    [self.viewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 
 - (void) photoEditorCanceled:(AFPhotoEditorController*)editor
 {
-	[self cancelCallback];
-	[self.viewController dismissViewControllerAnimated:YES completion:nil];
+    [self cancelCallback];
+    [self.viewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 
@@ -61,9 +63,9 @@
 
 - (void) cancelCallback
 {
-	CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
+    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
     
-	[self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
 }
 
 @end
